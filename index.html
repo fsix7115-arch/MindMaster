@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindMaster — offline brain training</title>
+<meta name="description" content="MindMaster is an offline brain-training app. No ads, no trackers, no accounts. Currently 2 playable games.">
+<style>
+  :root{
+    --bg:#0F0F1A; --panel:#1A1A2E; --purple:#6C4AB6; --blue:#3B82F6;
+    --green:#22C55E; --lime:#A8FF48; --text:#F2F2EE; --dim:#9A9AA8;
+    --r:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--lime);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  header{padding:76px 0 60px;text-align:center;
+    background:radial-gradient(900px 380px at 50% -10%,rgba(108,74,182,.34),transparent)}
+  h1{font-size:clamp(34px,7vw,60px);font-weight:800;letter-spacing:-1.6px;line-height:1.06}
+  h1 span{background:linear-gradient(92deg,var(--lime),var(--green));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:clamp(16px,2.6vw,20px);margin:18px auto 34px;max-width:640px}
+  .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:16px 28px;
+    border-radius:999px;font-weight:700;font-size:16px;border:1px solid transparent;
+    transition:transform .16s ease,box-shadow .16s ease}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--purple);color:#fff;box-shadow:0 10px 34px rgba(108,74,182,.42)}
+  .btn-primary:hover{box-shadow:0 14px 42px rgba(108,74,182,.55)}
+  .btn-ghost{background:transparent;color:var(--text);border-color:#33334A}
+  .btn-ghost.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+  .note{max-width:660px;margin:20px auto 0;font-size:13px;color:var(--dim)}
+  section{padding:62px 0;border-top:1px solid #1E1E33}
+  h2{font-size:clamp(25px,4.4vw,36px);font-weight:800;letter-spacing:-.7px;margin-bottom:14px}
+  .lead{color:var(--dim);margin-bottom:32px;max-width:600px}
+  .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card{background:var(--panel);border:1px solid #26263D;border-radius:var(--r);padding:24px}
+  .card.live{border-color:rgba(34,197,94,.45)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.1px;
+    text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:14px}
+  .tag-live{background:rgba(34,197,94,.16);color:var(--green)}
+  .tag-soon{background:#26263D;color:var(--dim)}
+  .card h3{font-size:19px;font-weight:800;margin-bottom:7px}
+  .card p{color:var(--dim);font-size:14.5px}
+  ul{list-style:none}
+  li{display:flex;gap:12px;align-items:flex-start;padding:11px 0;
+    border-bottom:1px solid #1E1E33;font-size:15.5px}
+  li:last-child{border-bottom:0}
+  .tick{color:var(--green);font-weight:800;flex-shrink:0}
+  .cta{text-align:center;background:linear-gradient(180deg,transparent,rgba(108,74,182,.13))}
+  .stats{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:34px 0}
+  .stat{background:var(--panel);border:1px solid #26263D;border-radius:var(--r);
+    padding:22px;text-align:center}
+  .stat b{display:block;font-size:31px;font-weight:900;color:var(--lime)}
+  .stat span{color:var(--dim);font-size:12.5px}
+  details{background:var(--panel);border:1px solid #26263D;border-radius:14px;
+    padding:16px 20px;margin-bottom:11px}
+  summary{cursor:pointer;font-weight:700}
+  details p{color:var(--dim);font-size:14.5px;margin-top:11px}
+  footer{padding:38px 0;text-align:center;color:var(--dim);font-size:13.5px;
+    border-top:1px solid #1E1E33}
+  .hero-art{max-width:300px;margin:38px auto 0;border-radius:30px;overflow:hidden;
+    border:1px solid #26263D;box-shadow:0 26px 68px rgba(0,0,0,.55)}
+  @media(max-width:620px){.btns{flex-direction:column}.btn{justify-content:center}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Train your brain<br>with <span>MindMaster</span></h1>
+    <p class="sub">Two brain games. One app. Sharper mind. Works completely offline.</p>
+    <div class="btns">
+      <a class="btn btn-primary" href="https://github.com/fsix7115-arch/MindMaster/releases/latest/download/MindMaster-v1.0.1.apk">⬇ Download APK</a>
+      <span class="btn btn-ghost disabled" title="Not built yet">⬇ Windows — not built yet</span>
+    </div>
+    <p class="note">
+      Android 5.0+ · 40 MB · v1.0.1<br>
+      Sideloaded, not Play Store. Android will ask you to allow "install unknown apps". Expected.
+    </p>
+    <div class="hero-art">
+      <img src="https://raw.githubusercontent.com/fsix7115-arch/MindMaster/main/docs/screenshot-home.png"
+           alt="MindMaster home screen showing the Math Sprint and Memory Matrix game cards" width="300" loading="lazy">
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>What's actually in it</h2>
+    <p class="lead">Two games are playable today. The other four are on the roadmap and are not
+      pretending otherwise — they are visible in the app, greyed out, and not tappable.</p>
+    <div class="grid">
+      <div class="card live"><span class="tag tag-live">Playable</span>
+        <h3>Math Sprint</h3>
+        <p>60 seconds. Addition, subtraction, multiplication and exact division. Difficulty
+           climbs with your score, and a correct-answer streak multiplies up to 5x.</p></div>
+      <div class="card live"><span class="tag tag-live">Playable</span>
+        <h3>Memory Matrix</h3>
+        <p>Match every pair on a 4x4, 6x6 or 8x8 board. Fewer moves scores higher and a fast
+           clear adds a time bonus.</p></div>
+      <div class="card"><span class="tag tag-soon">Not built</span>
+        <h3>Pattern Recall</h3><p>Simon-style sequence memory. Planned.</p></div>
+      <div class="card"><span class="tag tag-soon">Not built</span>
+        <h3>Logic Puzzles</h3><p>Sudoku-lite with limited daily hints. Planned.</p></div>
+      <div class="card"><span class="tag tag-soon">Not built</span>
+        <h3>Color Match</h3><p>Stroop test. Planned.</p></div>
+      <div class="card"><span class="tag tag-soon">Not built</span>
+        <h3>Focus Grid</h3><p>Tap 1 to 25 in order against the clock. Planned.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why MindMaster</h2>
+    <ul>
+      <li><span class="tick">✓</span><div><b>Completely offline.</b> No account, no sign-in, no server. It works in airplane mode.</div></li>
+      <li><span class="tick">✓</span><div><b>No ads, no trackers, no analytics SDK.</b> The app makes zero network requests.</div></li>
+      <li><span class="tick">✓</span><div><b>Open source.</b> Every rule and test is readable in the repo.</div></li>
+      <li><span class="tick">✓</span><div><b>Tested.</b> 40 automated tests cover the game rules. <code>flutter analyze</code> is clean.</div></li>
+      <li><span class="tick">✓</span><div><b>Small.</b> A 40 MB APK, built from a single Flutter codebase.</div></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Honest numbers</h2>
+    <p class="lead">This app is new. Here is what is actually true today, not what a
+      marketing page would claim.</p>
+    <div class="stats">
+      <div class="stat"><b>2</b><span>games playable</span></div>
+      <div class="stat"><b>40</b><span>automated tests</span></div>
+      <div class="stat"><b>0</b><span>trackers</span></div>
+      <div class="stat"><b>0</b><span>ads</span></div>
+      <div class="stat"><b>0</b><span>accounts needed</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>Get MindMaster</h2>
+    <p class="lead">Free, and it will stay free. Download the APK, allow installs from your
+      file manager, open it.</p>
+    <div class="btns">
+      <a class="btn btn-primary" href="https://github.com/fsix7115-arch/MindMaster/releases/latest/download/MindMaster-v1.0.1.apk">⬇ Download v1.0.1 APK</a>
+    </div>
+    <p class="note">Android 5.0+ · ~40 MB · no permissions requested</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>FAQ</h2>
+    <details><summary>Why is it not on the Play Store?</summary>
+      <p>It is sideloaded for now. Store release needs a release keystore, a privacy policy
+         URL, and a signed build — all in progress. The APK you download right now works, it
+         just isn't signed for store distribution.</p></details>
+    <details><summary>Is there a Windows version?</summary>
+      <p>Not yet. A Windows build needs a Windows toolchain, so it will come from a
+         Windows CI runner. The button on this page is deliberately disabled rather than
+         linking to nothing.</p></details>
+    <details><summary>Does it need internet?</summary>
+      <p>No. There is no account, no server and no analytics. Airplane mode is fine.</p></details>
+    <details><summary>Why only two games?</summary>
+      <p>Because shipping two finished games beats describing six half-built ones. The
+         remaining four are on the roadmap and are shown as unfinished in the app itself.</p></details>
+    <details><summary>Can I contribute?</summary>
+      <p>Yes — <a href="https://github.com/fsix7115-arch/MindMaster">github.com/fsix7115-arch/MindMaster</a>.
+         The game rules are deliberately kept in pure Dart so they are easy to test and to change.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>MindMaster v1.0.1 · built by <a href="https://github.com/fsix7115-arch">ARYX</a> ·
+       <a href="https://github.com/fsix7115-arch/MindMaster">source</a> ·
+       <a href="https://github.com/fsix7115-arch/MindMaster/blob/main/README.md">README</a></p>
+  </div>
+</footer>
+
+<script>
+  // Highlight the download button that matches the visitor's OS.
+  // The Windows button stays disabled regardless — that build does not exist yet.
+  (function () {
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = /android/.test(ua);
+    var hint = document.createElement('p');
+    hint.className = 'note';
+    if (isAndroid) {
+      hint.textContent = 'Detected Android — the APK button above is the right one.';
+    } else if (/windows/.test(ua)) {
+      hint.innerHTML = 'Detected Windows — no build exists yet. Run it in <code>flutter run -d chrome</code> from source, or use the Android APK.';
+    } else {
+      hint.innerHTML = 'Not on Android? Clone the repo and run <code>flutter run -d chrome</code>.';
+    }
+    document.querySelector('.cta .sub').insertAdjacentElement('afterend', hint);
+  })();
+</script>
+</body>
+</html>
