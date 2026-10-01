@@ -4,18 +4,34 @@ Offline brain-training app. No ads, no trackers, no accounts.
 
 ## Status
 
-**v1.0.0 — Math Sprint only.** Five more games are listed in the app as
-"Coming next" and are deliberately non-tappable. Nothing in this repo is
-claimed as built until it is.
+Two games are playable. The other four are listed in the app as "Coming next"
+and are deliberately non-tappable. Nothing here is claimed as built until it is.
 
 | Game | State |
 |---|---|
 | Math Sprint | Playable, tested |
-| Memory Matrix | Not built |
+| Memory Matrix | Playable, tested |
 | Pattern Recall | Not built |
 | Logic Puzzles | Not built |
 | Color Match | Not built |
 | Focus Grid | Not built |
+
+## Download
+
+**Android APK (v1.0.1):**
+https://github.com/fsix7115-arch/MindMaster/releases/latest/download/MindMaster-v1.0.1.apk
+
+Download it, allow "install unknown apps" for your file manager, open it. No
+store account needed. Built with Flutter's debug signing key, so Android shows
+an install warning; that is expected and does not affect the app.
+
+## What Memory Matrix does
+
+- Pair matching on 4x4 / 6x6 / 8x8 boards, switchable mid-session
+- Fewer moves scores higher; a fast clear adds a time bonus
+- The board is dealt by shuffling symbols rather than positions, so a solvable
+  layout is guaranteed by construction
+- A miss locks the board briefly so both symbols can be read before they flip
 
 ## What Math Sprint does
 
@@ -37,13 +53,16 @@ claimed as built until it is.
   readable without colour vision.
 - **Unbuilt games are visible but inert.** Hiding them would imply features that
   do not exist.
+- **Scoring can never emit Infinity or NaN.** `MemoryMatrixGame.score` crashed
+  on a zero-move round; the divisor is clamped and the result is guarded,
+  because a scoring crash mid-round is worse than a slightly wrong number.
 
 ## Run it
 
 ```bash
 flutter pub get
 flutter run           # connected device or emulator
-flutter test          # 21 tests
+flutter test          # 40 tests
 flutter analyze       # clean
 flutter build apk --release
 ```

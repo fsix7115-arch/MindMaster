@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'features/games/math_sprint/math_sprint_screen.dart';
+import 'features/games/memory_matrix/memory_matrix_screen.dart';
 
 /// Palette from the MindMaster spec.
 class AppColors {
@@ -76,10 +77,15 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const _ComingSoonCard(
+              _GameCard(
                 title: 'Memory Matrix',
-                subtitle: 'Coming next',
+                subtitle: 'Match the pairs. Fewer moves, higher score.',
                 icon: Icons.grid_view_rounded,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const MemoryMatrixScreen(),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               const _ComingSoonCard(
