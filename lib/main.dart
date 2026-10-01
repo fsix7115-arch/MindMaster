@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'features/games/math_sprint/math_sprint_screen.dart';
 import 'features/games/memory_matrix/memory_matrix_screen.dart';
+import 'features/games/pattern_recall/pattern_recall_screen.dart';
 
 /// Palette from the MindMaster spec.
 class AppColors {
@@ -88,10 +89,27 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const _ComingSoonCard(
+              _GameCard(
                 title: 'Pattern Recall',
-                subtitle: 'Coming next',
+                subtitle: 'Watch the pads. Repeat the pattern.',
                 icon: Icons.graphic_eq_rounded,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PatternRecallScreen(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const _ComingSoonCard(
+                title: 'Logic Puzzles',
+                subtitle: 'Coming next',
+                icon: Icons.grid_on_rounded,
+              ),
+              const SizedBox(height: 16),
+              const _ComingSoonCard(
+                title: 'Color Match',
+                subtitle: 'Coming next',
+                icon: Icons.palette_rounded,
               ),
               const Spacer(),
               Container(
