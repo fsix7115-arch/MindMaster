@@ -1,0 +1,101 @@
+name: Build MindMaster
+
+# Two triggers on purpose:
+#   - tags: a real release build, uploaded to a GitHub Release
+#   - manual: lets us verify a build without publishing anything
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # Android builds on Linux; the Flutter SDK is pinned so a broken upstream
+    # release can never silently change what a tagged version ships.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter ${{ vars.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ vars.FLUTTER_VERSION || '3.35.5' }}
+          channel: stable
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-
+
+      # Analysis and tests gate the build. A broken build should never reach a
+      # download link.
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Run tests
+        run: flutter test --reporter=expanded
+
+      - name: Build release APK
+        run: |
+          flutter build apk --release \
+            --build-name="$(git describe --tags --abbrev=0 2>/dev/null || echo 1.0.0)" \
+            --build-number="$(git rev-list --count HEAD)"
+
+      # Renamed to a versioned asset so the README link stays valid forever.
+      # A bare app-release.apk in a release gets replaced by the next build and
+      # every previously shared link silently starts serving a different app.
+      - name: Rename APK
+        run: |
+          mkdir -p dist
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo v1.0.0)
+          mv build/app/outputs/flutter-apk/app-release.apk \
+             "dist/MindMaster-${VERSION}.apk"
+          ls -la dist
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mindmaster-apk
+          path: dist/*.apk
+          if-no-files-found: error
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.apk
+          body: |
+            ## MindMaster ${{ github.ref_name }}
+
+            Offline brain-training app. No ads, no trackers, no accounts.
+
+            | Game | State |
+            |---|---|
+            | Math Sprint | Playable |
+            | Memory Matrix | Playable |
+            | Pattern Recall | Planned |
+            | Logic Puzzles | Planned |
+            | Color Match | Planned |
+            | Focus Grid | Planned |
+
+            **Install (Android):** download the APK, allow "install unknown
+            apps" for your file manager, open it, done. No store needed.
+
+            Built from the tagged commit. Android requires API 21+.
+
+            > This APK uses Flutter's default debug signing key, because no
+            > release keystore is configured yet. Android will show a warning on
+            > first install and Play Store will not accept this build. Both are
+            > expected for v1.0.0 and neither affects the app itself.
