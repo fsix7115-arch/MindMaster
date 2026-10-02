@@ -1,0 +1,7 @@
+com.mindmaster.app-pngs-0 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/build/generated/res/pngs/release
+com.mindmaster.app-resValues-1 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/build/generated/res/resValues/release
+com.mindmaster.app-packageReleaseResources-2 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/build/intermediates/incremental/release/packageReleaseResources/merged.dir
+com.mindmaster.app-packageReleaseResources-3 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
+com.mindmaster.app-release-4 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/build/intermediates/merged_res/release/mergeReleaseResources
+com.mindmaster.app-main-5 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/res
+com.mindmaster.app-release-6 /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/release/res

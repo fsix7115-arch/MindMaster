@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMaster — Brain Training Games</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    .hero-title {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      margin-bottom: 16px;
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .game-card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 24px;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: 'Orbitron', sans-serif;
+    }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <div class="hero">
+    <h1 class="hero-title text-gradient">MindMaster</h1>
+    <p class="hero-subtitle">
+      6 brain-training games in one app. Sudoku-lite puzzles, Stroop tests, 
+      memory challenges, and focus drills. Track your progress and compete with yourself.
+    </p>
+    <div class="stats-bar glass-panel">
+      <div class="stat-item"><span class="stat-value text-gradient-green">6</span><br><span class="stat-label">Games</span></div>
+      <div class="stat-item"><span class="stat-value text-gradient-purple">3</span><br><span class="stat-label">New Games</span></div>
+      <div class="stat-item"><span class="stat-value text-gradient">∞</span><br><span class="stat-label">Practice</span></div>
+    </div>
+  </div>
+
+
+    <div id="leaderboard-content"></div>
+
+  <div class="games-grid">
+    <a href="math-sprint.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🔢</div>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Math Sprint</h3>
+        <p style="color: var(--text-secondary);">60 seconds of speed math. How fast can you solve?</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">EASY</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">MEDIUM</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">HARD</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="logic-puzzles.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🧩</div>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Logic Puzzles</h3>
+        <p style="color: var(--text-secondary);">Sudoku-lite puzzles. 4×4 to 9×9 grids.</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">4×4</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">6×6</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">9×9</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="color-match.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🎨</div>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Color Match</h3>
+        <p style="color: var(--text-secondary);">Stroop test. Tap the color, not the word!</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">4 COLORS</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">6 COLORS</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">8 COLORS</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="focus-grid.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🎯</div>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Focus Grid</h3>
+        <p style="color: var(--text-secondary);">Tap 1-25 in order. How fast can you go?</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">4×4</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">5×5</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">6×6</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="memory-matrix.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🧠</div>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Memory Matrix</h3>
+        <p style="color: var(--text-secondary);">Pair matching on 4×4 / 6×6 / 8×8 boards. How fast can you clear it?</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">4×4</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">6×6</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">8×8</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="pattern-recall.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">💫</div>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Pattern Recall</h3>
+        <p style="color: var(--text-secondary);">Simon Says style game on a 3D pad. Watch, remember, repeat.</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">EASY</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">MEDIUM</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">HARD</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <footer style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+    <p>MindMaster — Built with HTML, CSS & JavaScript</p>
+    <p style="font-size: 0.85rem; margin-top: 8px;">No frameworks. No downloads. Just play.</p>
+  </footer>
+
+  <script>
+    // Particles
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.setProperty('--duration', (6 + Math.random() * 8) + 's');
+      p.style.animationDelay = Math.random() * 4 + 's';
+      document.getElementById('particles').appendChild(p);
+    }
+
+    // Mouse tracking for cards
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        MM?.Mouse?.trackElement?.(card, { depth: 8, tilt: 6 });
+      });
+    });
+  </script>
+
+  <!-- MindMaster PWA + Leaderboard -->
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+    if (window.MM && MM.Leaderboard) {
+      MM.Leaderboard.render().catch(function (e) {
+        console.warn('Leaderboard render failed:', e);
+      });
+    }
+  </script>
+</body>
+</html>

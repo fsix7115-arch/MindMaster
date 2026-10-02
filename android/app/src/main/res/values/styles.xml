@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fullscreen dark theme matching the web app's "Neural Core"
+         aesthetic (#05070a void black). -->
+    <style name="Theme.MindMaster" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/void_black</item>
+        <item name="android:colorBackground">@color/void_black</item>
+        <item name="android:statusBarColor">@color/void_black</item>
+        <item name="android:navigationBarColor">@color/void_black</item>
+    </style>
+</resources>

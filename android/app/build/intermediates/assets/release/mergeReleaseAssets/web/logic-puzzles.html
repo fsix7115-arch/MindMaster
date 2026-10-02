@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logic Puzzles — MindMaster</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .game-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .mm-sudoku-grid {
+      display: grid;
+      gap: 4px;
+      width: 100%;
+      aspect-ratio: 1;
+      padding: 12px;
+      background: var(--bg-glass);
+      border: 2px solid var(--border-glass-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-glass);
+    }
+
+    .mm-sudoku-cell {
+      aspect-ratio: 1;
+      min-height: 40px;
+    }
+
+    .mm-sudoku-cell:hover:not([data-given="true"]) {
+      transform: scale(1.05);
+      border-color: var(--neon-blue) !important;
+      box-shadow: var(--glow-blue);
+    }
+
+    .mm-number-pad {
+      margin: 0 auto;
+    }
+
+    .mm-answer-btn {
+      aspect-ratio: 1;
+      min-height: 50px;
+    }
+
+    .mm-answer-btn:hover:not(:disabled) {
+      transform: scale(1.08);
+      box-shadow: var(--glow-blue);
+      border-color: var(--neon-blue);
+    }
+
+    .mm-answer-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 80px;
+    }
+
+    .stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--neon-blue);
+      text-shadow: var(--glow-blue);
+    }
+
+    .modal-overlay {
+      display: none;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .end-screen {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .final-score {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 640px) {
+      .game-title { font-size: 1.5rem; }
+      .mm-sudoku-cell { min-height: 32px; }
+      .mm-answer-btn { min-height: 42px; }
+    }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
+</head>
+<body>
+  <!-- Particles background -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Main game container -->
+  <div class="game-container">
+    
+    <!-- Header with title + sound toggle -->
+    <div class="game-header glass-panel" style="padding: 16px 24px;">
+      <h1 class="game-title text-gradient">Logic Puzzles</h1>
+      <div id="soundToggle"></div>
+    </div>
+
+    <!-- Stats HUD -->
+    <div class="stats-row glass-panel" style="padding: 16px 24px;">
+      <div class="stat-item">
+        <span class="stat-label">Score</span>
+        <span class="stat-value mm-sudoku-score">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Time</span>
+        <span class="stat-value blue mm-sudoku-timer">00:00</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Hints</span>
+        <span class="stat-value amber mm-sudoku-hints">3 left</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">High Score</span>
+        <span class="stat-value green mm-high-score">0</span>
+      </div>
+    </div>
+
+    <!-- Difficulty selector -->
+    <div class="controls">
+      <div class="btn-group" id="difficultyToggle">
+        <button class="btn-toggle active" data-mode="easy">🌱 EASY</button>
+        <button class="btn-toggle" data-mode="medium">⚡ MEDIUM</button>
+        <button class="btn-toggle" data-mode="hard">🔥 HARD</button>
+      </div>
+      <button class="btn btn-primary" id="startBtn">START GAME</button>
+      <button class="btn btn-secondary" id="hintBtn" style="display: none;">💡 HINT</button>
+      <button class="btn btn-secondary" id="resetBtn" style="display: none;">🔄 RESET</button>
+    </div>
+
+    <!-- Game board container -->
+    <div id="mm-games-container">
+      <div class="mm-sudoku-grid" id="sudokuGrid"></div>
+      <div class="mm-number-pad" id="numberPad"></div>
+    </div>
+
+  </div>
+
+  <!-- End game modal -->
+  <div class="modal-overlay" id="endModal">
+    <div class="glass-panel modal-content end-screen">
+      <h2 class="text-gradient" style="font-size: 2rem; margin-bottom: 12px;">🎉 PUZZLE SOLVED!</h2>
+      <div class="final-score text-gradient-green" id="finalScore">0</div>
+      <p id="accuracyText" style="color: var(--text-secondary); font-size: 1.1rem; margin: 16px 0;">Perfect solve!</p>
+      <p id="timeText" style="color: var(--text-muted); margin-bottom: 24px;">Time: 00:00</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button class="btn btn-primary" id="playAgainBtn">PLAY AGAIN</button>
+        <button class="btn btn-secondary" id="closeModalBtn">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core scripts -->
+  <script>
+    const MM = window.MM || {};
+    window.MM = MM;
+  </script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/core/mouse-tracker.js"></script>
+  <script src="assets/js/core/audio.js"></script>
+  <script src="assets/js/core/haptics.js"></script>
+  <script src="assets/js/core/notifications.js"></script>
+  <script src="assets/js/core/game-engine.js"></script>
+  <script src="assets/js/games/shared/components.js"></script>
+  <script src="assets/js/games/logic_puzzles/logic_puzzles.js"></script>
+
+  <!-- Page integration script -->
+  <script>
+    (async function() {
+      'use strict';
+
+      // Initialize core systems
+      try {
+        (async () => { try { if (MM.Storage && MM.Storage.open) await MM.Storage.open(); } catch(e) {} })();
+      } catch(e) { console.warn('Storage init:', e.message); }
+      
+      try {
+        (async () => { try { if (MM.Audio && MM.Audio.init) await MM.Audio.init(); } catch(e) {} })();
+      } catch(e) { console.warn('Audio init:', e.message); }
+
+      MM.Mouse.bindEvents();
+      MM.Mouse.tick();
+
+      // Render particles
+      const particlesEl = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.top = `${Math.random() * 100}%`;
+        p.style.setProperty('--duration', `${8 + Math.random() * 8}s`);
+        p.style.animationDelay = `${Math.random() * 4}s`;
+        particlesEl.appendChild(p);
+      }
+
+      // Sound toggle
+      const soundToggle = new MM.UI.SoundToggle({
+        music: false,
+        sfx: true,
+        onChange: ({ music, sfx }) => {
+          MM.Audio.setMuted(!sfx);
+          if (music) MM.Audio.musicPlay();
+          else MM.Audio.musicStop();
+        }
+      });
+      document.getElementById('soundToggle').appendChild(soundToggle.getElement());
+
+      // Difficulty selector
+      const difficultyBtns = document.querySelectorAll('#difficultyToggle .btn-toggle');
+      difficultyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          difficultyBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          MM.Engine.setDifficulty(btn.dataset.mode);
+          MM.Audio.select();
+          loadHighScore();
+        });
+      });
+
+      // Load high score for current difficulty
+      async function loadHighScore() {
+        try {
+          const scores = await MM.Storage.getHighScore('logic_puzzles', MM.Engine.difficulty);
+          const best = scores.length > 0 ? scores[0].score : 0;
+          document.querySelector('.mm-high-score').textContent = MM.Engine.formatScore(best);
+        } catch (e) {
+          console.warn('High score load failed:', e);
+        }
+      }
+
+      // Fire-and-forget — never gate button wiring on storage reads
+      loadHighScore();
+
+      // Start button
+      let gameActive = false;
+      document.getElementById('startBtn').addEventListener('click', async () => {
+        if (gameActive) return;
+        gameActive = true;
+
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('hintBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = true);
+
+        await MM.Engine.startSession('logic_puzzles', MM.Engine.difficulty);
+        MM.Audio.select();
+      });
+
+      // Hint button
+      document.getElementById('hintBtn').addEventListener('click', () => {
+        MM.Games.LogicPuzzles.useHint();
+      });
+
+      // Reset button
+      document.getElementById('resetBtn').addEventListener('click', async () => {
+        if (!gameActive) return;
+        gameActive = false;
+
+        await MM.Games.LogicPuzzles.reset();
+        await MM.Games.LogicPuzzles.init();
+
+        document.getElementById('startBtn').style.display = 'inline-flex';
+        document.getElementById('hintBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'none';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = false);
+        document.getElementById('sudokuGrid').innerHTML = '';
+        document.getElementById('numberPad').innerHTML = '';
+
+        MM.Audio.click();
+      });
+
+      // End modal handlers
+      document.getElementById('playAgainBtn').addEventListener('click', () => {
+        document.getElementById('endModal').classList.remove('active');
+        document.getElementById('resetBtn').click();
+        setTimeout(() => document.getElementById('startBtn').click(), 100);
+      });
+
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        document.getElementById('endModal').classList.remove('active');
+        document.getElementById('resetBtn').click();
+      });
+
+      // Override the game's endGame to show modal
+      const originalEnd = MM.Games.LogicPuzzles.end;
+      MM.Games.LogicPuzzles.end = async function() {
+        await originalEnd.call(this);
+        gameActive = false;
+
+        const state = MM.Engine.state;
+        const session = state.session;
+
+        document.getElementById('finalScore').textContent = MM.Engine.formatScore(session?.score || 0);
+        document.getElementById('accuracyText').textContent = 
+          session?.errors === 0 ? 'Perfect solve! 🎯' : `${session?.errors || 0} errors`;
+        document.getElementById('timeText').textContent = 
+          `Time: ${MM.Engine.formatTime(session?.duration || 0)}`;
+
+        document.getElementById('endModal').classList.add('active');
+        await loadHighScore();
+      };
+
+      // Mouse tracking for game container
+      MM.Mouse.trackElement(document.querySelector('.game-container'), { depth: 8, tilt: 4 });
+
+      console.log('✅ MindMaster Logic Puzzles ready');
+    })();
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Matrix — MindMaster</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .memory-game { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+    .mm-memory-grid { display: grid; gap: 8px; padding: 12px; background: var(--bg-glass); border: 2px solid var(--border-glass-light); border-radius: var(--radius-lg); }
+    .controls { width: 100%; max-width: 500px; justify-content: center; display: flex; gap: 12px; flex-wrap: wrap; }
+    .mm-memory-progress { height: 6px; background: var(--bg-panel); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+    .mm-memory-progress-bar { height: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-blue)); transition: width 0.3s var(--ease-out-expo); }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="memory-game">
+    <div class="game-header glass-panel" style="padding: 16px 24px; width: 100%; justify-content: space-between;">
+      <h1 class="game-title text-gradient">Memory Matrix</h1>
+      <div id="soundToggle"></div>
+    </div>
+    <div class="stats-row glass-panel" style="padding: 14px 24px; width: 100%; justify-content: space-around;">
+      <div class="stat-item"><span class="stat-label">Moves</span><span class="stat-value mm-memory-moves">0</span></div>
+      <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value blue mm-memory-time">00:00</span></div>
+      <div class="stat-item"><span class="stat-label">Matched</span><span class="stat-value green mm-memory-progress-text">0/8</span></div>
+    </div>
+    <div class="controls">
+      <div class="btn-group" id="difficultyToggle">
+        <button class="btn-toggle" data-mode="easy">🌱 EASY (4×4)</button>
+        <button class="btn-toggle active" data-mode="medium">⚡ MEDIUM (6×6)</button>
+        <button class="btn-toggle" data-mode="hard">🔥 HARD (8×8)</button>
+      </div>
+      <button class="btn btn-primary" id="startBtn">START</button>
+      <button class="btn btn-secondary" id="resetBtn" style="display:none;">🔄 RESET</button>
+    </div>
+    <div class="mm-memory-grid" id="memoryGrid"></div>
+    <div class="mm-memory-progress" style="width: 100%; max-width: 500px;"><div class="mm-memory-progress-bar" style="width: 0%;"></div></div>
+  </div>
+  <div class="modal-overlay" id="endModal">
+    <div class="glass-panel modal-content end-screen">
+      <h2 class="text-gradient-green" style="font-size: 2rem;">🎉 COMPLETE!</h2>
+      <div class="final-score text-gradient" id="finalScore">0</div>
+      <p id="movesText" style="color: var(--text-secondary);"></p>
+      <p id="timeText" style="color: var(--text-muted);"></p>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+        <button class="btn btn-primary" id="playAgainBtn">PLAY AGAIN</button>
+        <button class="btn btn-secondary" id="closeModalBtn">CLOSE</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const MM = window.MM || {}; window.MM = MM;
+  </script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/core/mouse-tracker.js"></script>
+  <script src="assets/js/core/audio.js"></script>
+  <script src="assets/js/core/haptics.js"></script>
+  <script src="assets/js/core/notifications.js"></script>
+  <script src="assets/js/core/game-engine.js"></script>
+  <script src="assets/js/games/shared/components.js"></script>
+  <script src="assets/js/games/memory_matrix/memory_matrix.js"></script>
+  <script>
+    (async function() {
+      'use strict';
+      // Background init — never gate UI wiring on storage/audio
+      (async () => { try { if (MM.Storage?.open) await MM.Storage.open(); } catch(e) {} })();
+      (async () => { try { if (MM.Audio?.init) await MM.Audio.init(); } catch(e) {} })();
+      MM.Mouse.bindEvents(); MM.Mouse.tick();
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div'); p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%';
+        p.style.setProperty('--duration', (6 + Math.random() * 6) + 's');
+        document.getElementById('particles').appendChild(p);
+      }
+      const soundToggle = new MM.UI.SoundToggle({ music: false, sfx: true, onChange: ({sfx}) => MM.Audio.setMuted(!sfx) });
+      document.getElementById('soundToggle').appendChild(soundToggle.getElement());
+      document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active'); MM.Engine.setDifficulty(btn.dataset.mode); MM.Audio.select();
+        });
+      });
+      document.getElementById('startBtn').addEventListener('click', async () => {
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = true);
+        await MM.Engine.startSession('memory_matrix', MM.Engine.difficulty);
+      });
+      document.getElementById('resetBtn').addEventListener('click', async () => {
+        await MM.Games.MemoryMatrix.reset(); await MM.Games.MemoryMatrix.init();
+        document.getElementById('startBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'none';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = false);
+        document.getElementById('memoryGrid').innerHTML = '';
+        MM.Audio.click();
+      });
+      document.getElementById('playAgainBtn').addEventListener('click', () => { document.getElementById('endModal').classList.remove('active'); document.getElementById('resetBtn').click(); setTimeout(() => document.getElementById('startBtn').click(), 100); });
+      document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('endModal').classList.remove('active'); document.getElementById('resetBtn').click(); });
+      const origEnd = MM.Games.MemoryMatrix.end;
+      MM.Games.MemoryMatrix.end = async function() {
+        await origEnd.call(this);
+        const session = MM.Engine.state.session;
+        document.getElementById('finalScore').textContent = MM.Engine.formatScore(session?.score || 0);
+        document.getElementById('movesText').textContent = `Moves: ${session?.moves || 0}`;
+        document.getElementById('timeText').textContent = `Time: ${MM.Engine.formatTime(session?.duration || 0)}`;
+        document.getElementById('endModal').classList.add('active');
+      };
+      MM.Mouse.trackElement(document.querySelector('.memory-game'), { depth: 6, tilt: 3 });
+      console.log('✅ Memory Matrix ready');
+    })();
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

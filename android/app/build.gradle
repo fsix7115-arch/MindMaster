@@ -1,0 +1,45 @@
+// App-level build file — MindMaster
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.mindmaster.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.mindmaster.app"
+        minSdk 24
+        targetSdk 34
+        versionCode 110
+        versionName "1.1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('keystore/mindmaster.jks')
+            storePassword System.getenv('MM_KEYSTORE_PASS') ?: 'mindmaster'
+            keyAlias 'mindmaster'
+            keyPassword System.getenv('MM_KEY_PASS') ?: 'mindmaster'
+            // v1 (JAR) + v2 (APK Signature Scheme): widest device
+            // compatibility. v1 covers Android 7-10, v2 covers 7+.
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    // Play Store requires AAB; APK for direct install
+    bundle {
+        language { enableSplit = false }
+        density { enableSplit = false }
+        abi { enableSplit = false }
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.mindmaster.app-mergeReleaseResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "/home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/res/values/styles.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "4",
+                        "startOffsets": "168",
+                        "endLines": "12",
+                        "endColumns": "12",
+                        "endOffsets": "715"
+                    },
+                    "to": {
+                        "startLines": "5",
+                        "startColumns": "4",
+                        "startOffsets": "205",
+                        "endLines": "13",
+                        "endColumns": "12",
+                        "endOffsets": "752"
+                    }
+                },
+                {
+                    "source": "/home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "47",
+                        "endOffsets": "98"
+                    },
+                    "to": {
+                        "startLines": "4",
+                        "startColumns": "4",
+                        "startOffsets": "157",
+                        "endColumns": "47",
+                        "endOffsets": "200"
+                    }
+                },
+                {
+                    "source": "/home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/res/values/colors.xml",
+                    "from": {
+                        "startLines": "3,2",
+                        "startColumns": "4,4",
+                        "startOffsets": "100,55",
+                        "endColumns": "56,44",
+                        "endOffsets": "152,95"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,112",
+                        "endColumns": "56,44",
+                        "endOffsets": "107,152"
+                    }
+                }
+            ]
+        }
+    ]
+}

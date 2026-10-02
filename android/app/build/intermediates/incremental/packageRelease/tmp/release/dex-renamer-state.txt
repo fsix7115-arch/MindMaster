@@ -1,0 +1,4 @@
+#Fri Oct 02 18:14:36 UTC 2026
+base.0=/home/codespace/.hermes/cache/scratch/MindMaster/android/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

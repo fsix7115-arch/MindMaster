@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Sprint — MindMaster</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .math-game { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 20px; max-width: 600px; margin: 0 auto; }
+    .mm-question-text { font-size: 3rem; font-family: 'Orbitron', sans-serif; font-weight: 800; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+    .mm-answers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 400px; width: 100%; }
+    .mm-answer-btn { padding: 20px; font-size: 1.5rem; font-family: 'Orbitron', sans-serif; font-weight: 700; }
+    .mm-answer-btn:hover { transform: scale(1.05); box-shadow: var(--glow-blue); }
+    .mm-streak-display { font-size: 1rem; color: var(--neon-amber); font-weight: 600; letter-spacing: 0.1em; }
+    .mm-progress-text { font-size: 0.9rem; color: var(--text-muted); }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="math-game">
+    <div class="game-header glass-panel" style="padding: 16px 24px; width: 100%; justify-content: space-between;">
+      <h1 class="game-title text-gradient">Math Sprint</h1>
+      <div id="soundToggle"></div>
+    </div>
+    <div class="stats-row glass-panel" style="padding: 14px 24px; width: 100%; justify-content: space-around;">
+      <div class="stat-item"><span class="stat-label">Score</span><span class="stat-value mm-score-display">0</span></div>
+      <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value blue mm-timer-display">01:00</span></div>
+      <div class="stat-item"><span class="stat-label">Streak</span><span class="stat-value amber mm-streak-display"></span></div>
+    </div>
+    <div class="controls" style="width: 100%; max-width: 600px; justify-content: center;">
+      <div class="btn-group" id="difficultyToggle">
+        <button class="btn-toggle" data-mode="easy">🌱 EASY</button>
+        <button class="btn-toggle active" data-mode="medium">⚡ MEDIUM</button>
+        <button class="btn-toggle" data-mode="hard">🔥 HARD</button>
+      </div>
+      <button class="btn btn-primary" id="startBtn">START</button>
+      <button class="btn btn-secondary" id="resetBtn" style="display:none;">🔄 RESET</button>
+    </div>
+    <div class="mm-question-text" id="questionText">Tap START to play!</div>
+    <div class="mm-answers-grid" id="answersGrid"></div>
+    <div class="mm-progress-text" id="progressText"></div>
+  </div>
+  <div class="modal-overlay" id="endModal">
+    <div class="glass-panel modal-content end-screen">
+      <h2 class="text-gradient" style="font-size: 2rem;">⏰ TIME'S UP!</h2>
+      <div class="final-score text-gradient-green" id="finalScore">0</div>
+      <p id="accuracyText" style="color: var(--text-secondary);"></p>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+        <button class="btn btn-primary" id="playAgainBtn">PLAY AGAIN</button>
+        <button class="btn btn-secondary" id="closeModalBtn">CLOSE</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const MM = window.MM || {}; window.MM = MM;
+  </script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/core/mouse-tracker.js"></script>
+  <script src="assets/js/core/audio.js"></script>
+  <script src="assets/js/core/haptics.js"></script>
+  <script src="assets/js/core/notifications.js"></script>
+  <script src="assets/js/core/game-engine.js"></script>
+  <script src="assets/js/games/shared/components.js"></script>
+  <script src="assets/js/games/math_sprint/math_sprint.js"></script>
+  <script>
+    (async function() {
+      'use strict';
+      // Background init — never gate UI wiring on storage/audio
+      (async () => { try { if (MM.Storage?.open) await MM.Storage.open(); } catch(e) {} })();
+      (async () => { try { if (MM.Audio?.init) await MM.Audio.init(); } catch(e) {} })();
+      MM.Mouse.bindEvents(); MM.Mouse.tick();
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div'); p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%';
+        p.style.setProperty('--duration', (6 + Math.random() * 6) + 's');
+        document.getElementById('particles').appendChild(p);
+      }
+      const soundToggle = new MM.UI.SoundToggle({ music: false, sfx: true, onChange: ({sfx}) => MM.Audio.setMuted(!sfx) });
+      document.getElementById('soundToggle').appendChild(soundToggle.getElement());
+      document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active'); MM.Engine.setDifficulty(btn.dataset.mode); MM.Audio.select();
+        });
+      });
+      document.getElementById('startBtn').addEventListener('click', async () => {
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = true);
+        await MM.Engine.startSession('math_sprint', MM.Engine.difficulty);
+      });
+      document.getElementById('resetBtn').addEventListener('click', async () => {
+        await MM.Games.MathSprint.reset(); await MM.Games.MathSprint.init();
+        document.getElementById('startBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'none';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = false);
+        document.getElementById('questionText').textContent = 'Tap START to play!';
+        document.getElementById('answersGrid').innerHTML = '';
+        MM.Audio.click();
+      });
+      document.getElementById('playAgainBtn').addEventListener('click', () => { document.getElementById('endModal').classList.remove('active'); document.getElementById('resetBtn').click(); setTimeout(() => document.getElementById('startBtn').click(), 100); });
+      document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('endModal').classList.remove('active'); document.getElementById('resetBtn').click(); });
+      const origEnd = MM.Games.MathSprint.end;
+      MM.Games.MathSprint.end = async function() {
+        await origEnd.call(this);
+        const session = MM.Engine.state.session;
+        document.getElementById('finalScore').textContent = MM.Engine.formatScore(session?.score || 0);
+        const acc = session?.correct && session?.total ? (session.correct / session.total * 100).toFixed(0) : 0;
+        document.getElementById('accuracyText').textContent = `Correct: ${session?.correct || 0}/${session?.total || 0} (${acc}%)`;
+        document.getElementById('endModal').classList.add('active');
+      };
+      MM.Mouse.trackElement(document.querySelector('.math-game'), { depth: 6, tilt: 3 });
+      console.log('✅ Math Sprint ready');
+    })();
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

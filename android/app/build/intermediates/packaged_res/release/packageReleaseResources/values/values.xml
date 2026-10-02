@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#05070A</color>
+    <color name="void_black">#05070A</color>
+    <string name="app_name">MindMaster</string>
+    <style name="Theme.MindMaster" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/void_black</item>
+        <item name="android:colorBackground">@color/void_black</item>
+        <item name="android:statusBarColor">@color/void_black</item>
+        <item name="android:navigationBarColor">@color/void_black</item>
+    </style>
+</resources>

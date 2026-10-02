@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "com.mindmaster.app-release-4:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.mindmaster.app-main-5:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.mindmaster.app-release-4:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.mindmaster.app-main-5:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.mindmaster.app-release-4:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.mindmaster.app-main-5:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.mindmaster.app-release-4:/layout_activity_main.xml.flat",
+        "source": "com.mindmaster.app-main-5:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.mindmaster.app-release-4:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.mindmaster.app-main-5:/mipmap-xxxhdpi/ic_launcher.png"
+    }
+]

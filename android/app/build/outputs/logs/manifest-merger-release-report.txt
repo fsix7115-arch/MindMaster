@@ -1,0 +1,80 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:16:1-53:12
+INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:16:1-53:12
+INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:16:1-53:12
+INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:16:1-53:12
+	package
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:17:5-33
+		INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:19:5-32
+		INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:16:11-69
+	android:versionCode
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:18:5-30
+		INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml
+	android:installLocation
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:20:5-35
+uses-sdk
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:22:5-24:41
+INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:22:5-24:41
+INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:22:5-24:41
+	android:targetSdkVersion
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:24:9-38
+		INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:23:9-35
+		INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml
+application
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:26:5-52:19
+INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:26:5-52:19
+	android:extractNativeLibs
+		INJECTED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml
+	android:requestLegacyExternalStorage
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:37:9-53
+	android:supportsRtl
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:36:9-35
+	android:label
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:27:9-41
+	android:hardwareAccelerated
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:32:9-43
+	android:resizeableActivity
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:35:9-42
+	android:roundIcon
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:29:9-54
+	android:largeHeap
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:33:9-33
+	android:icon
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:28:9-43
+	android:allowBackup
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:31:9-35
+	android:theme
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:30:9-48
+	android:usesCleartextTraffic
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:34:9-45
+activity#com.mindmaster.app.MindMasterActivity
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:39:9-51:20
+	android:launchMode
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:44:13-44
+	android:hardwareAccelerated
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:45:13-47
+	android:windowSoftInputMode
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:43:13-55
+	android:exported
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:41:13-36
+	android:configChanges
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:42:13-113
+	android:name
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:40:13-47
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:47:13-50:29
+action#android.intent.action.MAIN
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:48:17-69
+	android:name
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:48:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:49:17-77
+	android:name
+		ADDED from /home/codespace/.hermes/cache/scratch/MindMaster/android/app/src/main/AndroidManifest.xml:49:27-74

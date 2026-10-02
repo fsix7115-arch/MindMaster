@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  MindMaster — AndroidManifest for the offline WebView wrapper.
-  No permissions: the app ships all assets locally and never touches
-  the network, storage, or device state beyond the WebView itself.
+  MindMaster — AndroidManifest
+  ==========================
+  Production WebView wrapper for the MindMaster brain-training suite.
+
+  Design decisions:
+  - NO dangerous permissions: everything ships in assets/web/.
+    The app works fully offline, never reads contacts/location,
+    and needs no INTERNET permission for gameplay.
+  - android:usesCleartextTraffic="false" — no plaintext HTTP.
+  - hardware acceleration + largeHeap for WebView performance.
+  - configChanges for smooth phone/tablet rotation without
+    activity restart (WebView state survives rotation).
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mindmaster.app"
     android:versionCode="110"
-    android:versionName="1.1.0">
+    android:versionName="1.1.0"
+    android:installLocation="auto">
+
+    <uses-sdk
+        android:minSdkVersion="24"
+        android:targetSdkVersion="34" />
 
     <application
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.MindMaster"
         android:allowBackup="true"
-        android:usesCleartextTraffic="false">
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
+        android:usesCleartextTraffic="false"
+        android:resizeableActivity="true"
+        android:supportsRtl="true"
+        android:requestLegacyExternalStorage="false">
 
         <activity
             android:name=".MindMasterActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="adjustResize">
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize|uiMode"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTask"
+            android:hardwareAccelerated="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
