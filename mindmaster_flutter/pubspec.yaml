@@ -1,0 +1,23 @@
+name: mindmaster
+description: "MindMaster — offline brain-training games (6 titles), no ads, no trackers."
+publish_to: 'none'
+
+# versionName 1.2.0 / versionCode 120
+version: 1.2.0+120
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

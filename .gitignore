@@ -6,3 +6,9 @@ android/keystore/
 # Python / OS
 __pycache__/
 .DS_Store
+
+# Flutter native app build artifacts
+mindmaster_flutter/build/
+mindmaster_flutter/linux/flutter/ephemeral/
+mindmaster_flutter/.dart_tool/
+*.aab
