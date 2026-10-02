@@ -145,21 +145,73 @@ echo "==> DEX produced"
 # NOTE: `aapt add` stores each file under the path it is given, so we
 # stage everything under BUILD_DIR/apkroot/ at the exact archive paths
 # first, then add each file with its staged (relative) path.
+#
+# CRITICAL: `aapt add` DEFLATES classes.dex by default. Android's
+# package parser reads classes.dex directly from the APK archive and
+# requires it STORED (uncompressed). We pass -0 (store) for the dex.
 rm -rf "$BUILD_DIR/apkroot"
 mkdir -p "$BUILD_DIR/apkroot/assets"
 cp "$BUILD_DIR/classes.dex" "$BUILD_DIR/apkroot/classes.dex"
 cp -r "$REPO_ROOT/android/app/src/main/assets/." "$BUILD_DIR/apkroot/assets/"
 
 cd "$BUILD_DIR/apkroot"
-ASSET_LIST=$(find . -type f | sed 's|^\./||')
+# NOTE: `aapt add` has no -0/store flag (that's `aapt package`).
+# It DEFLATES classes.dex, which Android's package parser cannot
+# read. The python step below re-stores manifest/dex/arsc
+# uncompressed after the fact.
+"$AAPT" add "$BUILD_DIR/resources.ap_" classes.dex >/dev/null
+# assets: normal deflate is fine
+ASSET_LIST=$(find assets -type f)
 for rel in $ASSET_LIST; do
   "$AAPT" add "$BUILD_DIR/resources.ap_" "$rel" >/dev/null
 done
 
 echo "==> DEX + assets added to package"
 
-# 5. Zipalign
+# 5. Zipalign — 4-byte alignment required for uncompressed entries
+#    (AndroidManifest.xml, classes.dex, resources.arsc). zipalign also
+#    verifies the manifest is still stored; if aapt add compressed it,
+#    we rebuild the manifest entry as STORED below.
 "$ZIPALIGN" -f 4 "$BUILD_DIR/resources.ap_" "$BUILD_DIR/aligned.apk"
+
+# Verify the two entries Android reads raw are STORED + aligned.
+# If aapt add compressed AndroidManifest.xml, fix it here.
+python3 - "$BUILD_DIR/aligned.apk" <<'PYEOF'
+import sys, zipfile, shutil, struct
+
+apk = sys.argv[1]
+z = zipfile.ZipFile(apk)
+entries = z.infolist()
+# Which entries must be STORED?
+must_store = {'AndroidManifest.xml', 'classes.dex', 'resources.arsc'}
+bad = [e.filename for e in entries if e.filename in must_store and e.compress_type != zipfile.ZIP_STORED]
+if not bad:
+    print("   manifest/dex/arsc already STORED")
+    sys.exit(0)
+print("   re-storing uncompressed:", bad)
+# Rebuild the zip with those entries stored, everything else as-is.
+tmp = apk + '.tmp'
+with zipfile.ZipFile(tmp, 'w') as out:
+    for e in entries:
+        data = z.read(e.filename)
+        if e.filename in must_store:
+            # STORED, preserve the original date/time
+            zi = zipfile.ZipInfo(e.filename, date_time=e.date_time)
+            zi.compress_type = zipfile.ZIP_STORED
+            zi.external_attr = e.external_attr
+            out.writestr(zi, data)
+        else:
+            zi = zipfile.ZipInfo(e.filename, date_time=e.date_time)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = e.external_attr
+            out.writestr(zi, data)
+z.close()
+shutil.move(tmp, apk)
+PYEOF
+
+# Re-align after any rebuild
+"$ZIPALIGN" -f 4 "$BUILD_DIR/aligned.apk" "$BUILD_DIR/aligned2.apk"
+mv "$BUILD_DIR/aligned2.apk" "$BUILD_DIR/aligned.apk"
 
 # 6. Sign (release keystore, generated once and kept under android/keystore)
 KEYSTORE="$REPO_ROOT/android/keystore/mindmaster.jks"

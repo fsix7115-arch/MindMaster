@@ -7,7 +7,7 @@
  * from cache first, falling back to network only for misses.
  */
 
-const CACHE_NAME = 'mindmaster-v1.1.0';
+const CACHE_NAME = 'mindmaster-v1.1.1';
 
 const CORE_ASSETS = [
   './',
@@ -63,7 +63,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: cache-first, then network, then cache fallback.
+// Fetch: network-first for HTML (always fresh), cache-first for assets.
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
@@ -74,6 +74,25 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // HTML pages: network-first so users always get the latest
+  // game code. Fall back to cache when offline.
+  const acceptsHtml = request.headers.get('accept') || '';
+  if (acceptsHtml.includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((c) => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Static assets (JS/CSS/images): cache-first for offline speed.
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
