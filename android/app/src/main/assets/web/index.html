@@ -124,21 +124,29 @@
       </div>
     </a>
 
-    <a href="#" class="game-card-link">
-      <div class="glass-card" style="padding: 30px; text-align: center; opacity: 0.6;">
+    <a href="memory-matrix.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
         <div style="font-size: 3rem; margin-bottom: 16px;">🧠</div>
         <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Memory Matrix</h3>
-        <p style="color: var(--text-secondary);">Pattern recall memory game. Coming soon!</p>
-        <div style="margin-top: 16px;"><span class="btn-toggle" style="font-size: 0.75rem;">COMING SOON</span></div>
+        <p style="color: var(--text-secondary);">Pair matching on 4×4 / 6×6 / 8×8 boards. How fast can you clear it?</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">4×4</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">6×6</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">8×8</span>
+        </div>
       </div>
     </a>
 
-    <a href="#" class="game-card-link">
-      <div class="glass-card" style="padding: 30px; text-align: center; opacity: 0.6;">
+    <a href="pattern-recall.html" class="game-card-link">
+      <div class="glass-card" style="padding: 30px; text-align: center;">
         <div style="font-size: 3rem; margin-bottom: 16px;">💫</div>
         <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 8px;">Pattern Recall</h3>
-        <p style="color: var(--text-secondary);">Simon Says style game. Coming soon!</p>
-        <div style="margin-top: 16px;"><span class="btn-toggle" style="font-size: 0.75rem;">COMING SOON</span></div>
+        <p style="color: var(--text-secondary);">Simon Says style game on a 3D pad. Watch, remember, repeat.</p>
+        <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <span class="btn-toggle active" style="font-size: 0.75rem;">EASY</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">MEDIUM</span>
+          <span class="btn-toggle active" style="font-size: 0.75rem;">HARD</span>
+        </div>
       </div>
     </a>
   </div>
@@ -168,12 +176,18 @@
     });
   </script>
 
-  <!-- MindMaster PWA -->
+  <!-- MindMaster PWA + Leaderboard -->
+  <script src="assets/js/core/storage.js"></script>
   <script src="assets/js/core/leaderboard.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+    if (window.MM && MM.Leaderboard) {
+      MM.Leaderboard.render().catch(function (e) {
+        console.warn('Leaderboard render failed:', e);
       });
     }
   </script>
