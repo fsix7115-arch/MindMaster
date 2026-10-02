@@ -62,8 +62,13 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  height: 100%;
-  overflow: hidden;
+  /* min-height (not height) + visible overflow so phones can scroll.
+     The previous `height:100%; overflow:hidden` locked the viewport and
+     made any content past the fold unreachable on mobile. */
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   font-family: 'Rajdhani', sans-serif;
   background: var(--bg-deep);
   color: var(--text-primary);
