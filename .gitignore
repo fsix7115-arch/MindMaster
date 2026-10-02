@@ -1,0 +1,8 @@
+# Build artifacts
+android/build/
+android/keystore/
+*.apk
+
+# Python / OS
+__pycache__/
+.DS_Store
