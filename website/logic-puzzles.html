@@ -147,6 +147,8 @@
       .mm-answer-btn { min-height: 42px; }
     }
   </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
 </head>
 <body>
   <!-- Particles background -->
@@ -365,6 +367,16 @@
 
       console.log('✅ MindMaster Logic Puzzles ready');
     })();
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
   </script>
 </body>
 </html>

@@ -14,6 +14,8 @@
     .mm-streak-display { font-size: 1rem; color: var(--neon-amber); font-weight: 600; letter-spacing: 0.1em; }
     .mm-progress-text { font-size: 0.9rem; color: var(--text-muted); }
   </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
 </head>
 <body>
   <div class="particles" id="particles"></div>
@@ -111,6 +113,16 @@
       MM.Mouse.trackElement(document.querySelector('.math-game'), { depth: 6, tilt: 3 });
       console.log('✅ Math Sprint ready');
     })();
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
   </script>
 </body>
 </html>

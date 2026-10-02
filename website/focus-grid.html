@@ -37,6 +37,8 @@
       .mm-focus-cell { min-height: 40px; font-size: 1rem !important; }
     }
   </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
 </head>
 <body>
   <div class="particles" id="particles"></div>
@@ -169,6 +171,16 @@
       MM.Mouse.trackElement(document.querySelector('.focus-game'), { depth: 8, tilt: 4 });
       console.log('✅ Focus Grid ready');
     })();
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
   </script>
 </body>
 </html>

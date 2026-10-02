@@ -49,6 +49,8 @@
       font-family: 'Orbitron', sans-serif;
     }
   </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070a">
 </head>
 <body>
   <div class="particles" id="particles"></div>
@@ -65,6 +67,9 @@
       <div class="stat-item"><span class="stat-value text-gradient">∞</span><br><span class="stat-label">Practice</span></div>
     </div>
   </div>
+
+
+    <div id="leaderboard-content"></div>
 
   <div class="games-grid">
     <a href="math-sprint.html" class="game-card-link">
@@ -161,6 +166,16 @@
         MM?.Mouse?.trackElement?.(card, { depth: 8, tilt: 6 });
       });
     });
+  </script>
+
+  <!-- MindMaster PWA -->
+  <script src="assets/js/core/leaderboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
   </script>
 </body>
 </html>
