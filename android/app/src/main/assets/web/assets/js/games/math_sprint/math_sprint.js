@@ -152,7 +152,7 @@ MM.Games.MathSprint = (function () {
     state.total++;
 
     // Update UI
-    const gameEl = document.getElementById('mm-games-container');
+    const gameEl = MM.Engine.getContainer();
     if (!gameEl) return;
 
     const questionEl = gameEl.querySelector('.mm-question-text');
@@ -223,7 +223,7 @@ MM.Games.MathSprint = (function () {
     }
 
     // Update score display
-    const scoreEl = document.getElementById('mm-games-container')?.querySelector('.mm-score-display');
+    const scoreEl = MM.Engine.getContainer()?.querySelector('.mm-score-display');
     if (scoreEl) scoreEl.textContent = MM.Engine.formatScore(state.score);
 
     if (state.total >= 20 || state.timeLeft <= 0) {
@@ -241,7 +241,7 @@ MM.Games.MathSprint = (function () {
     state.timer = null;
 
     // Show end screen
-    const gameEl = document.getElementById('mm-games-container');
+    const gameEl = MM.Engine.getContainer();
     if (!gameEl) return;
 
     const endScreen = gameEl.querySelector('.mm-end-screen');
@@ -280,7 +280,7 @@ MM.Games.MathSprint = (function () {
     state.active = false;
     state.finished = false;
 
-    const gameEl = document.getElementById('mm-games-container');
+    const gameEl = MM.Engine.getContainer();
     if (!gameEl) return;
 
     const startScreen = gameEl.querySelector('.mm-start-screen');
@@ -313,7 +313,7 @@ MM.Games.MathSprint = (function () {
       state.streak = 0;
       state.timeLeft = 60;
 
-      const gameEl = document.getElementById('mm-games-container');
+      const gameEl = MM.Engine.getContainer();
       if (!gameEl) return;
 
       const startScreen = gameEl.querySelector('.mm-start-screen');

@@ -96,8 +96,9 @@
   <script>
     (async function() {
       'use strict';
-      try { if (MM.Storage?.open) await MM.Storage.open(); } catch(e) {}
-      try { if (MM.Audio?.init) await MM.Audio.init(); } catch(e) {}
+      // Background init — never gate UI wiring on storage/audio
+      (async () => { try { if (MM.Storage?.open) await MM.Storage.open(); } catch(e) {} })();
+      (async () => { try { if (MM.Audio?.init) await MM.Audio.init(); } catch(e) {} })();
 
       MM.Mouse.bindEvents();
       MM.Mouse.tick();

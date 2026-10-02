@@ -76,7 +76,7 @@ MM.Games.MemoryMatrix = (function () {
   }
 
   function renderGrid() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
 
     const gridEl = container.querySelector('.mm-memory-grid');
@@ -193,7 +193,7 @@ MM.Games.MemoryMatrix = (function () {
   }
 
   function updateHUD() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
 
     const movesEl = container.querySelector('.mm-memory-moves');
@@ -247,7 +247,7 @@ MM.Games.MemoryMatrix = (function () {
     state.grid = [];
     state.flipped = [];
     state.locked = false;
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (container) {
       container.querySelector('.mm-memory-grid').innerHTML = '';
     }
