@@ -289,36 +289,51 @@ MM.Audio = (function () {
     if (STATE.initDone) return Promise.resolve();
 
     return new Promise((resolve) => {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      STATE.ctx = new AudioContext();
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) {
+          // No Web Audio support (very old browser) — run silent.
+          STATE.muted = true;
+          STATE.initDone = true;
+          return resolve();
+        }
+        STATE.ctx = new AudioContext();
 
-      // Master chain
-      STATE.masterGain = STATE.ctx.createGain();
-      STATE.masterGain.gain.value = STATE.muted ? 0 : 1;
+        // Master chain
+        STATE.masterGain = STATE.ctx.createGain();
+        STATE.masterGain.gain.value = STATE.muted ? 0 : 1;
 
-      STATE.sfxGain = STATE.ctx.createGain();
-      STATE.sfxGain.gain.value = STATE.sfxVolume;
+        STATE.sfxGain = STATE.ctx.createGain();
+        STATE.sfxGain.gain.value = STATE.sfxVolume;
 
-      STATE.musicGain = STATE.ctx.createGain();
-      STATE.musicGain.gain.value = STATE.musicVolume;
+        STATE.musicGain = STATE.ctx.createGain();
+        STATE.musicGain.gain.value = STATE.musicVolume;
 
-      // Reverb (convolver)
-      const convolver = STATE.ctx.createConvolver();
-      const impulse = createReverbImpulse(STATE.ctx);
-      convolver.buffer = impulse;
-      convolver.connect(STATE.masterGain);
+        // Reverb (convolver)
+        const convolver = STATE.ctx.createConvolver();
+        const impulse = createReverbImpulse(STATE.ctx);
+        convolver.buffer = impulse;
+        convolver.connect(STATE.masterGain);
 
-      STATE.sfxGain.connect(convolver);
-      STATE.musicGain.connect(convolver);
+        STATE.sfxGain.connect(convolver);
+        STATE.musicGain.connect(convolver);
 
-      STATE.sfxGain.connect(STATE.masterGain);
-      STATE.musicGain.connect(STATE.masterGain);
-      STATE.masterGain.connect(STATE.ctx.destination);
+        STATE.sfxGain.connect(STATE.masterGain);
+        STATE.musicGain.connect(STATE.masterGain);
+        STATE.masterGain.connect(STATE.ctx.destination);
 
-      STATE.initDone = true;
-      if (STATE.ctx.state === 'suspended') {
-        STATE.ctx.resume().then(resolve);
-      } else {
+        STATE.initDone = true;
+        if (STATE.ctx.state === 'suspended') {
+          STATE.ctx.resume().then(resolve).catch(resolve);
+        } else {
+          resolve();
+        }
+      } catch (err) {
+        // Audio unavailable (autoplay policy, old device) — never
+        // let a sound failure break the game itself.
+        console.warn('[MindMaster] Audio init failed, running silent:', err);
+        STATE.muted = true;
+        STATE.initDone = true;
         resolve();
       }
     });
