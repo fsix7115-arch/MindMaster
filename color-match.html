@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Match — MindMaster</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .color-game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .mm-color-word {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .mm-color-choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 400px;
+    }
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .mm-color-choices { gap: 8px; }
+      .mm-color-choice { width: 56px; height: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <div class="color-game">
+    <div class="game-header glass-panel" style="padding: 16px 24px; width: 100%;">
+      <h1 class="game-title text-gradient">Color Match</h1>
+      <div id="soundToggle"></div>
+    </div>
+
+    <div class="stats-row glass-panel" style="padding: 14px 24px; width: 100%; justify-content: space-around;">
+      <div class="stat-item"><span class="stat-label">Score</span><span class="stat-value mm-score-display">0</span></div>
+      <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value blue mm-timer-display">00:60</span></div>
+      <div class="stat-item"><span class="stat-label">Accuracy</span><span class="stat-value green mm-accuracy-display">0%</span></div>
+    </div>
+
+    <div class="controls" style="width: 100%; max-width: 600px; justify-content: center;">
+      <div class="btn-group" id="difficultyToggle">
+        <button class="btn-toggle active" data-mode="easy">🌱 EASY</button>
+        <button class="btn-toggle" data-mode="medium">⚡ MEDIUM</button>
+        <button class="btn-toggle" data-mode="hard">🔥 HARD</button>
+      </div>
+      <button class="btn btn-primary" id="startBtn">START</button>
+      <button class="btn btn-secondary" id="resetBtn" style="display:none;">🔄 RESET</button>
+    </div>
+
+    <div class="mm-color-word" id="colorWord">Tap START to play!</div>
+    <div class="mm-color-choices" id="colorChoices"></div>
+  </div>
+
+  <div class="modal-overlay" id="endModal">
+    <div class="glass-panel modal-content end-screen">
+      <h2 class="text-gradient" style="font-size: 2rem;">🎯 TIME'S UP!</h2>
+      <div class="final-score text-gradient-green" id="finalScore">0</div>
+      <p id="accuracyText" style="color: var(--text-secondary);"></p>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+        <button class="btn btn-primary" id="playAgainBtn">PLAY AGAIN</button>
+        <button class="btn btn-secondary" id="closeModalBtn">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MM = window.MM || {};
+    window.MM = MM;
+  </script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/core/mouse-tracker.js"></script>
+  <script src="assets/js/core/audio.js"></script>
+  <script src="assets/js/core/haptics.js"></script>
+  <script src="assets/js/core/notifications.js"></script>
+  <script src="assets/js/core/game-engine.js"></script>
+  <script src="assets/js/games/shared/components.js"></script>
+  <script src="assets/js/games/color_match/color_match.js"></script>
+  <script>
+    (async function() {
+      'use strict';
+      try { if (MM.Storage?.open) await MM.Storage.open(); } catch(e) {}
+      try { if (MM.Audio?.init) await MM.Audio.init(); } catch(e) {}
+
+      MM.Mouse.bindEvents();
+      MM.Mouse.tick();
+
+      // Particles
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.top = `${Math.random() * 100}%`;
+        p.style.setProperty('--duration', `${6 + Math.random() * 6}s`);
+        document.getElementById('particles').appendChild(p);
+      }
+
+      // Sound toggle
+      const soundToggle = new MM.UI.SoundToggle({ music: false, sfx: true, onChange: ({sfx}) => MM.Audio.setMuted(!sfx) });
+      document.getElementById('soundToggle').appendChild(soundToggle.getElement());
+
+      // Difficulty
+      document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          MM.Engine.setDifficulty(btn.dataset.mode);
+          MM.Audio.select();
+        });
+      });
+
+      // Game controls
+      document.getElementById('startBtn').addEventListener('click', async () => {
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = true);
+        await MM.Engine.startSession('color_match', MM.Engine.difficulty);
+        MM.Audio.select();
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', async () => {
+        await MM.Games.ColorMatch.reset();
+        await MM.Games.ColorMatch.init();
+        document.getElementById('startBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'none';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = false);
+        document.getElementById('colorWord').textContent = 'Tap START to play!';
+        document.getElementById('colorChoices').innerHTML = '';
+        MM.Audio.click();
+      });
+
+      document.getElementById('playAgainBtn').addEventListener('click', () => {
+        document.getElementById('endModal').classList.remove('active');
+        document.getElementById('resetBtn').click();
+        setTimeout(() => document.getElementById('startBtn').click(), 100);
+      });
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        document.getElementById('endModal').classList.remove('active');
+        document.getElementById('resetBtn').click();
+      });
+
+      // End modal
+      const origEnd = MM.Games.ColorMatch.end;
+      MM.Games.ColorMatch.end = async function() {
+        await origEnd.call(this);
+        const session = MM.Engine.state.session;
+        document.getElementById('finalScore').textContent = MM.Engine.formatScore(session?.score || 0);
+        const acc = session?.correct && session?.total ? (session.correct / session.total * 100).toFixed(0) : 0;
+        document.getElementById('accuracyText').textContent = `Accuracy: ${acc}% | Correct: ${session?.correct || 0}`;
+        document.getElementById('endModal').classList.add('active');
+      };
+
+      MM.Mouse.trackElement(document.querySelector('.color-game'), { depth: 6, tilt: 3 });
+      console.log('✅ Color Match ready');
+    })();
+  </script>
+</body>
+</html>
