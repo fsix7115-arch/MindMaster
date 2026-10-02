@@ -286,12 +286,17 @@
 
       // Load high score for current difficulty
       async function loadHighScore() {
-        const scores = await MM.Storage.getHighScore('logic_puzzles', MM.Engine.difficulty);
-        const best = scores.length > 0 ? scores[0].score : 0;
-        document.querySelector('.mm-high-score').textContent = MM.Engine.formatScore(best);
+        try {
+          const scores = await MM.Storage.getHighScore('logic_puzzles', MM.Engine.difficulty);
+          const best = scores.length > 0 ? scores[0].score : 0;
+          document.querySelector('.mm-high-score').textContent = MM.Engine.formatScore(best);
+        } catch (e) {
+          console.warn('High score load failed:', e);
+        }
       }
 
-      await loadHighScore();
+      // Fire-and-forget — never gate button wiring on storage reads
+      loadHighScore();
 
       // Start button
       let gameActive = false;
