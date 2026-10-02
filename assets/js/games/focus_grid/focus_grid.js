@@ -52,7 +52,7 @@ MM.Games.FocusGrid = (function () {
   }
 
   function renderGrid() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
 
     const gridEl = container.querySelector('.mm-focus-grid');
@@ -146,13 +146,13 @@ MM.Games.FocusGrid = (function () {
         cell.style.borderColor = 'var(--border-glass)';
       }, 400);
 
-      const errorEl = document.getElementById('mm-games-container')?.querySelector('.mm-error-display');
+      const errorEl = MM.Engine.getContainer()?.querySelector('.mm-error-display');
       if (errorEl) errorEl.textContent = state.errors;
     }
   }
 
   function updateHUD() {
-    const timerEl = document.getElementById('mm-games-container')?.querySelector('.mm-timer-display');
+    const timerEl = MM.Engine.getContainer()?.querySelector('.mm-timer-display');
     if (timerEl) timerEl.textContent = MM.Engine.formatTime(state.time);
   }
 
@@ -187,7 +187,7 @@ MM.Games.FocusGrid = (function () {
   function reset() {
     clearInterval(state.timerInterval);
     state.active = false;
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (container) {
       container.querySelector('.mm-focus-grid').innerHTML = '';
     }

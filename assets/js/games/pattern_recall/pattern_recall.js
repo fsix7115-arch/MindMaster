@@ -90,7 +90,7 @@ MM.Games.PatternRecall = (function () {
   async function showSequence() {
     state.playerSequence = [];
     state.step = 0;
-    const gameEl = document.getElementById('mm-games-container');
+    const gameEl = MM.Engine.getContainer();
     const statusEl = gameEl?.querySelector('.mm-sequence-status');
 
     for (let i = 0; i < state.sequence.length; i++) {
@@ -157,7 +157,7 @@ MM.Games.PatternRecall = (function () {
     state.level = 1;
     state.active = false;
     clearTimeout(state.finishTimeout);
-    const gameEl = document.getElementById('mm-games-container');
+    const gameEl = MM.Engine.getContainer();
     const statusEl = gameEl?.querySelector('.mm-sequence-status');
     if (statusEl) statusEl.textContent = '';
   }
@@ -178,7 +178,7 @@ MM.Games.PatternRecall = (function () {
     saveHighScore(score, { level: state.level, steps: state.sequence.length, win, accuracy: win ? 1 : 0 });
 
     // Show end screen
-    const gameEl = document.getElementById('mm-games-container');
+    const gameEl = MM.Engine.getContainer();
     const endScreen = gameEl?.querySelector('.mm-end-screen');
     const finalScoreEl = endScreen?.querySelector('.mm-final-score');
     const accuracyEl = endScreen?.querySelector('.mm-accuracy');
@@ -199,7 +199,7 @@ MM.Games.PatternRecall = (function () {
       return new Promise((resolve) => {
         MM.Audio.init().then(() => {
           // Render buttons (called from UI)
-          const gameEl = document.getElementById('mm-games-container');
+          const gameEl = MM.Engine.getContainer();
           if (gameEl) {
             const grid = document.createElement('div');
             grid.className = 'mm-pattern-grid';

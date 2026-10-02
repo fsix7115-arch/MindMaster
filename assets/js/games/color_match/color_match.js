@@ -81,7 +81,7 @@ MM.Games.ColorMatch = (function () {
   }
 
   function renderRound() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
 
     const wordEl = container.querySelector('.mm-color-word');
@@ -161,7 +161,7 @@ MM.Games.ColorMatch = (function () {
   }
 
   function updateHUD() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
     const scoreEl = container.querySelector('.mm-score-display');
     const accuracyEl = container.querySelector('.mm-accuracy-display');
@@ -184,7 +184,7 @@ MM.Games.ColorMatch = (function () {
 
     state.timerInterval = setInterval(() => {
       state.time--;
-      const timeEl = document.getElementById('mm-games-container')?.querySelector('.mm-timer-display');
+      const timeEl = MM.Engine.getContainer()?.querySelector('.mm-timer-display');
       if (timeEl) timeEl.textContent = MM.Engine.formatTime(state.time);
       if (state.time <= 0) endGame();
     }, 1000);
@@ -200,7 +200,7 @@ MM.Games.ColorMatch = (function () {
   function reset() {
     clearInterval(state.timerInterval);
     state.active = false;
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (container) {
       container.querySelector('.mm-color-word').textContent = '';
       container.querySelector('.mm-color-choices').innerHTML = '';

@@ -111,7 +111,7 @@ MM.Games.LogicPuzzles = (function () {
   // ---- UI updates ----
 
   function renderBoard() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
     const gridEl = container.querySelector('.mm-sudoku-grid');
     if (!gridEl) return;
@@ -164,7 +164,7 @@ MM.Games.LogicPuzzles = (function () {
   }
 
   function updateNumberPad() {
-    const pad = document.getElementById('mm-games-container')?.querySelector('.mm-number-pad');
+    const pad = MM.Engine.getContainer()?.querySelector('.mm-number-pad');
     if (!pad) return;
     for (let i = 1; i <= state.size; i++) {
       const btn = pad.querySelector(`[data-val="${i}"]`);
@@ -186,7 +186,7 @@ MM.Games.LogicPuzzles = (function () {
     state.current.value = val;
 
     // Re-render the cell
-    const gridEl = document.getElementById('mm-games-container')?.querySelector('.mm-sudoku-grid');
+    const gridEl = MM.Engine.getContainer()?.querySelector('.mm-sudoku-grid');
     const cell = gridEl?.children[row * state.size + col];
     if (cell) {
       cell.textContent = val;
@@ -253,7 +253,7 @@ MM.Games.LogicPuzzles = (function () {
     if (empties.length > 0) {
       const [r, c] = empties[MM.Engine.getRandom(0, empties.length - 1)];
       state.board[r][c] = state.solution[r][c];
-      const gridEl = document.getElementById('mm-games-container')?.querySelector('.mm-sudoku-grid');
+      const gridEl = MM.Engine.getContainer()?.querySelector('.mm-sudoku-grid');
       const cell = gridEl?.children[r * state.size + c];
       if (cell) {
         cell.textContent = state.board[r][c];
@@ -268,7 +268,7 @@ MM.Games.LogicPuzzles = (function () {
   }
 
   function updateHUD() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
     const scoreEl = container.querySelector('.mm-sudoku-score');
     const hintEl = container.querySelector('.mm-sudoku-hints');
@@ -305,7 +305,7 @@ MM.Games.LogicPuzzles = (function () {
   }
 
   function buildNumberPad() {
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     if (!container) return;
 
     let pad = container.querySelector('.mm-number-pad');
@@ -361,7 +361,7 @@ MM.Games.LogicPuzzles = (function () {
     state.score = 0;
     state.time = 0;
     state.errors = 0;
-    const container = document.getElementById('mm-games-container');
+    const container = MM.Engine.getContainer();
     const grid = container?.querySelector('.mm-sudoku-grid');
     const pad = container?.querySelector('.mm-number-pad');
     if (grid) grid.innerHTML = '';
