@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pattern Recall — MindMaster</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .pattern-game { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+    .mm-pattern-buttons { display: grid; gap: 14px; max-width: 420px; padding: 20px; background: var(--bg-glass); border: 2px solid var(--border-glass-light); border-radius: var(--radius-lg); }
+    .mm-pattern-pad { cursor: pointer; }
+    .mm-pattern-pad:hover { transform: scale(1.08); }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="pattern-game">
+    <div class="game-header glass-panel" style="padding: 16px 24px; width: 100%; justify-content: space-between;">
+      <h1 class="game-title text-gradient">Pattern Recall</h1>
+      <div id="soundToggle"></div>
+    </div>
+    <div class="stats-row glass-panel" style="padding: 14px 24px; width: 100%; justify-content: space-around;">
+      <div class="stat-item"><span class="stat-label">Round</span><span class="stat-value purple mm-pattern-round">0</span></div>
+      <div class="stat-item"><span class="stat-label">Score</span><span class="stat-value mm-pattern-score">0</span></div>
+      <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value blue mm-pattern-time">00:00</span></div>
+    </div>
+    <div class="controls" style="width: 100%; max-width: 500px; justify-content: center;">
+      <div class="btn-group" id="difficultyToggle">
+        <button class="btn-toggle" data-mode="easy">🌱 EASY (4)</button>
+        <button class="btn-toggle active" data-mode="medium">⚡ MEDIUM (6)</button>
+        <button class="btn-toggle" data-mode="hard">🔥 HARD (8)</button>
+      </div>
+      <button class="btn btn-primary" id="startBtn">START</button>
+      <button class="btn btn-secondary" id="resetBtn" style="display:none;">🔄 RESET</button>
+    </div>
+    <div class="mm-pattern-buttons" id="patternButtons"></div>
+  </div>
+  <div class="modal-overlay" id="endModal">
+    <div class="glass-panel modal-content end-screen">
+      <h2 class="text-gradient-purple" style="font-size: 2rem;">🎮 GAME OVER!</h2>
+      <div class="final-score text-gradient" id="finalScore">0</div>
+      <p id="roundText" style="color: var(--text-secondary);"></p>
+      <p id="timeText" style="color: var(--text-muted);"></p>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+        <button class="btn btn-primary" id="playAgainBtn">PLAY AGAIN</button>
+        <button class="btn btn-secondary" id="closeModalBtn">CLOSE</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const MM = window.MM || {}; window.MM = MM;
+  </script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/core/mouse-tracker.js"></script>
+  <script src="assets/js/core/audio.js"></script>
+  <script src="assets/js/core/haptics.js"></script>
+  <script src="assets/js/core/notifications.js"></script>
+  <script src="assets/js/core/game-engine.js"></script>
+  <script src="assets/js/games/shared/components.js"></script>
+  <script src="assets/js/games/pattern_recall/pattern_recall.js"></script>
+  <script>
+    (async function() {
+      'use strict';
+      try { if (MM.Storage?.open) await MM.Storage.open(); } catch(e) {}
+      try { if (MM.Audio?.init) await MM.Audio.init(); } catch(e) {}
+      MM.Mouse.bindEvents(); MM.Mouse.tick();
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div'); p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%';
+        p.style.setProperty('--duration', (6 + Math.random() * 6) + 's');
+        document.getElementById('particles').appendChild(p);
+      }
+      const soundToggle = new MM.UI.SoundToggle({ music: false, sfx: true, onChange: ({sfx}) => MM.Audio.setMuted(!sfx) });
+      document.getElementById('soundToggle').appendChild(soundToggle.getElement());
+      document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active'); MM.Engine.setDifficulty(btn.dataset.mode); MM.Audio.select();
+        });
+      });
+      document.getElementById('startBtn').addEventListener('click', async () => {
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = true);
+        await MM.Engine.startSession('pattern_recall', MM.Engine.difficulty);
+      });
+      document.getElementById('resetBtn').addEventListener('click', async () => {
+        await MM.Games.PatternRecall.reset(); await MM.Games.PatternRecall.init();
+        document.getElementById('startBtn').style.display = 'inline-flex';
+        document.getElementById('resetBtn').style.display = 'none';
+        document.querySelectorAll('#difficultyToggle .btn-toggle').forEach(b => b.disabled = false);
+        document.getElementById('patternButtons').innerHTML = '';
+        MM.Audio.click();
+      });
+      document.getElementById('playAgainBtn').addEventListener('click', () => { document.getElementById('endModal').classList.remove('active'); document.getElementById('resetBtn').click(); setTimeout(() => document.getElementById('startBtn').click(), 100); });
+      document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('endModal').classList.remove('active'); document.getElementById('resetBtn').click(); });
+      const origEnd = MM.Games.PatternRecall.end;
+      MM.Games.PatternRecall.end = async function() {
+        await origEnd.call(this);
+        const session = MM.Engine.state.session;
+        document.getElementById('finalScore').textContent = MM.Engine.formatScore(session?.score || 0);
+        document.getElementById('roundText').textContent = `Round: ${session?.maxRound || 0}`;
+        document.getElementById('timeText').textContent = `Time: ${MM.Engine.formatTime(session?.duration || 0)}`;
+        document.getElementById('endModal').classList.add('active');
+      };
+      MM.Mouse.trackElement(document.querySelector('.pattern-game'), { depth: 6, tilt: 3 });
+      console.log('✅ Pattern Recall ready');
+    })();
+  </script>
+</body>
+</html>
