@@ -256,6 +256,25 @@ MM.Engine = (function () {
     return arr;
   };
 
+  /**
+   * Resolve the game's DOM container.
+   *
+   * Games were authored against two different page structures:
+   * some pages carry an explicit `#mm-games-container` wrapper
+   * (logic-puzzles), others put game elements directly under a
+   * game-specific root (math-sprint's `.math-game`). The game
+   * modules all query `#mm-games-container` first; this helper
+   * adds the fallback so a missing wrapper never silences a game.
+   */
+  const getContainer = () => {
+    let el = document.getElementById('mm-games-container');
+    if (el) return el;
+    // Fallback: the game area is the closest ancestor that holds
+    // game UI. Prefer an explicit game-area class, then body.
+    el = document.querySelector('.mm-game-area, .math-game, .game-area, .game-root');
+    return el || document.body;
+  };
+
   return {
     register,
     getGame,
@@ -264,6 +283,7 @@ MM.Engine = (function () {
     pauseSession,
     resumeSession,
     endSession,
+    getContainer,
     get state() { return { ...STATE }; },
     get currentGame() { return STATE.currentGame; },
     get difficulty() { return STATE.difficulty; },

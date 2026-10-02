@@ -238,11 +238,11 @@
 
       // Initialize core systems
       try {
-        if (MM.Storage && MM.Storage.open) await MM.Storage.open();
+        (async () => { try { if (MM.Storage && MM.Storage.open) await MM.Storage.open(); } catch(e) {} })();
       } catch(e) { console.warn('Storage init:', e.message); }
       
       try {
-        if (MM.Audio && MM.Audio.init) await MM.Audio.init();
+        (async () => { try { if (MM.Audio && MM.Audio.init) await MM.Audio.init(); } catch(e) {} })();
       } catch(e) { console.warn('Audio init:', e.message); }
 
       MM.Mouse.bindEvents();
